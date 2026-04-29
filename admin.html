@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Heartline Admin — Earnings Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+        body{background:#000;color:#fff;padding:20px}
+      .logo{font-size:28px;font-weight:800;text-align:center;margin:20px 0;background:linear-gradient(45deg,#ff3b5c,#ff8a00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+      .card{background:#1a1a1a;border-radius:16px;padding:20px;margin:15px 0;border:1px solid #333}
+      .stat{font-size:32px;font-weight:700;color:#25D366;margin:10px 0}
+      .label{color:#888;font-size:14px}
+      .grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+        table{width:100%;border-collapse:collapse;margin-top:15px}
+        td,th{padding:12px;text-align:left;border-bottom:1px solid #333}
+        img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+      .adsense-warning{background:#2a1a00;border:1px solid #ff8a00;padding:15px;border-radius:12px;margin:20px 0}
+    </style>
+</head>
+<body>
+    <div class="logo">Heartline CEO Dashboard</div>
+    
+    <div class="adsense-warning">
+        <strong>⚠️ Connect AdSense First:</strong> Earnings show $0.00 until you apply at adsense.google.com and add ads to index.html
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <div class="label">Total Users</div>
+            <div class="stat" id="totalUsers">0</div>
+        </div>
+        <div class="card">
+            <div class="label">Total Likes</div>
+            <div class="stat" id="totalLikes">0</div>
+        </div>
+        <div class="card">
+            <div class="label">Today's Signups</div>
+            <div class="stat" id="todaySignups">0</div>
+        </div>
+        <div class="card">
+            <div class="label">Ad Revenue</div>
+            <div class="stat" id="adRevenue">$0.00</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Recent Users</h3>
+        <table id="userTable">
+            <tr><th></th><th>Name</th><th>Age</th><th>Joined</th></tr>
+        </table>
+    </div>
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCPwUG0Cjjrd0DsbiyBYhF3qcKefTpWGR0",
+        authDomain: "heartline-a371d.firebaseapp.com",
+        projectId: "heartline-a371d",
+        storageBucket: "heartline-a371d.firebasestorage.app",
+        messagingSenderId: "230833188703",
+        appId: "1:230833188703:web:c00ae92dd6755ca62590ea"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadDashboard() {
+        const users = await getDocs(collection(db, 'users'));
+        const userList = users.docs.map(d => ({id: d.id,...d.data()}));
+        document.getElementById('totalUsers').textContent = userList.length;
+        
+        const today = new Date().toISOString().split('T')[0];
+        const todayUsers = userList.filter(u => u.createdAt?.startsWith(today));
+        document.getElementById('todaySignups').textContent = todayUsers.length;
+        
+        const likes = await getDocs(collection(db, 'likes'));
+        document.getElementById('totalLikes').textContent = likes.size;
+        
+        const table = document.getElementById('userTable');
+        userList.slice(-10).reverse().forEach(user => {
+            const date = new Date(user.createdAt).toLocaleDateString();
+            table.innerHTML += `<tr>
+                <td><img src="${user.photoURL}" onerror="this.src='https://via.placeholder.com/40'"></td>
+                <td>${user.name}</td>
+                <td>${user.age}</td>
+                <td>${date}</td>
+            </tr>`;
+        });
+
+        document.getElementById('adRevenue').textContent = '$0.00';
+    }
+
+    loadDashboard();
+    setInterval(loadDashboard, 30000);
+</script>
+</body>
+</html>
