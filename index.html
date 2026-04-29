@@ -117,12 +117,12 @@
         
         if (!name ||!age ||!gender ||!bio ||!file) return alert('Fill all fields + upload photo');
         
-        const photoRef = ref(storage, `photos/${currentUser.uid}`);
-        await uploadBytes(photoRef, file);
-        const photoURL = await getDownloadURL(photoRef);
+        // const photoRef = ref(storage, `photos/${currentUser.uid}`);
+        // await uploadBytes(photoRef, file);
+        // const "" = await getDownloadURL(photoRef);
         
         await setDoc(doc(db, 'users', currentUser.uid), {
-            name, age: parseInt(age), gender, bio, photoURL,
+            name, age: parseInt(age), gender, bio, photoURL:"",
             email: currentUser.email,
             createdAt: new Date().toISOString()
         });
