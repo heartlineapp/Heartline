@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Heartline — Find Your Heart Line</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Heartline: Meet real people near you. 18+ only.">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,sans-serif;background:#fff1f2;color:#1f2937;padding:16px}
+.container{max-width:420px;margin:auto}
+.card{background:white;padding:24px;border-radius:20px;margin:16px 0;box-shadow:0 4px 12px rgba(225,29,72,0.1)}
+.logo{text-align:center;margin-bottom:8px}
+.logo h1{color:#e11d48;font-size:28px}
+.logo p{color:#64748b;font-size:14px}
+    input,select,button,textarea{width:100%;padding:14px;margin:10px 0;border:2px solid #fecdd3;border-radius:12px;font-size:16px}
+    input:focus,select:focus{border-color:#e11d48;outline:none}
+    button{background:#e11d48;color:white;font-weight:bold;border:none;cursor:pointer}
+    button:disabled{background:#fda4af}
+.btn-green{background:#16a34a}.btn-gray{background:#6b7280}
+.profile-pic{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:auto;display:block}
+.center{text-align:center}.small{font-size:12px;color:#64748b;line-height:1.5}
+.flex{display:flex;gap:10px}.flex button{flex:1}
+.tag{background:#ffe4e6;color:#be123c;padding:4px 10px;border-radius:20px;font-size:12px;display:inline-block;margin:4px 0}
+    a{color:#e11d48;text-decoration:none}
+.hidden{display:none}
+.footer{text-align:center;margin-top:20px}
+  </style>
+</head>
+<body>
+<div class="container">
+  <div id="ageGate" class="card">
+    <div class="logo"><h1>Heartline</h1><p>Find your heart line</p></div>
+    <h3 class="center">You must be 18+ to enter</h3>
+    <p class="small center">This protects our community. We follow NDPR + global laws.</p>
+    <input id="birthYear" type="number" placeholder="Enter your birth year e.g 2005">
+    <button onclick="checkAge()">Enter Heartline</button>
+    <p class="small center">By entering, you agree to our <a href="#" onclick="showPolicy()">Terms & Privacy</a></p>
+  </div>
+  <div id="signupPage" class="card hidden">
+    <div class="logo"><h1>Heartline</h1><p>Join 1,000+ people finding connections</p></div>
+    <input id="name" placeholder="First Name">
+    <select id="gender">
+      <option value="">I am a...</option>
+      <option>Man</option><option>Woman</option><option>Non-binary</option>
+    </select>
+    <select id="lookingFor">
+      <option value="">Looking for...</option>
+      <option>Men</option><option>Women</option><option>Everyone</option>
+    </select>
+    <input id="location" placeholder="City e.g Ibadan">
+    <textarea id="bio" placeholder="Your bio: I love jollof, football, and real talk..." rows="3"></textarea>
+    <button onclick="createProfile()">Create My Profile</button>
+    <p class="small">We only collect what you type here. <a href="#" onclick="showPolicy()">Read Privacy Policy</a></p>
+  </div>
+  <div id="swipePage" class="hidden">
+    <div class="card center">
+      <p class="small">Welcome back, <b id="userName"></b>!</p>
+    </div>
+    <div id="currentProfile" class="card">
+      <img src="https://i.pravatar.cc/200?img=32" class="profile-pic" id="pic">
+      <h2 id="matchName" class="center">Amaka, 22</h2>
+      <p id="matchLocation" class="center small">Ibadan</p>
+      <div class="center"><span class="tag" id="matchTag">Loves Afrobeats</span></div>
+      <p id="matchBio" class="center">Final year UI. Looking for genuine gist and maybe more.</p>
+      <div class="flex">
+        <button class="btn-gray" onclick="nextProfile()">Pass</button>
+        <button class="btn-green" onclick="like()">Like ❤️</button>
+      </div>
+    </div>
+    <p class="center small">You've liked <span id="likeCount">0</span> people. <a href="#" onclick="showMatches()">See Matches</a></p>
+  </div>
+  <div id="policyPage" class="card hidden">
+    <h3>Heartline Privacy Policy & Terms</h3>
+    <p class="small"><b>Last Updated:</b> April 28, 2026</p>
+    <p class="small"><b>1. Age Rule:</b> You must be 18+. We delete underage accounts.</p>
+    <p class="small"><b>2. Data We Collect:</b> Name, age, gender, city, bio. You give this to create profile.</p>
+    <p class="small"><b>3. How We Use Data:</b> To show you matches. We NEVER sell your name, chats, or location to anyone.</p>
+    <p class="small"><b>4. Your Rights:</b> Email heartline.app@gmail.com to delete all your data anytime. We comply with NDPR + GDPR.</p>
+    <p class="small"><b>5. No Illegal Use:</b> No nudity, scams, harassment. Break rules = instant ban.</p>
+    <p class="small"><b>6. We Make Money:</b> Via ads and optional Premium ₦1,500/month. Never by selling you.</p>
+    <button onclick="closePolicy()">Back to App</button>
+  </div>
+  <div class="footer small">
+    <p>© 2026 Heartline. Made in Nigeria 🇳🇬 | <a href="#" onclick="showPolicy()">Privacy</a></p>
+  </div>
+</div>
+<script>
+  let users = [
+    {name:'Amaka', age:22, gender:'Woman', location:'Ibadan', bio:'Final year UI. Looking for genuine gist and maybe more.', tag:'Loves Afrobeats', img:'https://i.pravatar.cc/200?img=32'},
+    {name:'Tunde', age:24, gender:'Man', location:'Lagos', bio:'Software dev. Gym 5x week. Can cook jollof.', tag:'Tech + Fitness', img:'https://i.pravatar.cc/200?img=14'},
+    {name:'Zainab', age:20, gender:'Woman', location:'Abuja', bio:'Makeup artist. Corper. Allah first.', tag:'Beauty + Faith', img:'https://i.pravatar.cc/200?img=45'},
+    {name:'Emeka', age:26, gender:'Man', location:'Ibadan', bio:'Poly Ibadan Mech Eng. Business minded.', tag:'Hustler', img:'https://i.pravatar.cc/200?img=52'}
+  ];
+  let currentUser = {};
+  let currentIndex = 0;
+  let likes = 0;
+  let userMatches = [];
+  function checkAge() {
+    let year = parseInt(document.getElementById('birthYear').value);
+    let currentYear = new Date().getFullYear();
+    let age = currentYear - year;
+    if(!year || year < 1900 || year > currentYear) {
+      alert('Enter valid birth year');
+      return;
+    }
+    if(age < 18) {
+      alert('Sorry, Heartline is 18+ only. This is law in Nigeria, US, EU. Come back when you\'re 18.');
+      return;
+    }
+    localStorage.setItem('heartlineAgeVerified', 'true');
+    document.getElementById('ageGate').classList.add('hidden');
+    document.getElementById('signupPage').classList.remove('hidden');
+  }
+  function createProfile() {
+    let name = document.getElementById('name').value.trim();
+    let gender = document.getElementById('gender').value;
+    let lookingFor = document.getElementById('lookingFor').value;
+    let location = document.getElementById('location').value.trim();
+    let bio = document.getElementById('bio').value.trim();
+    if(!name ||!gender ||!lookingFor ||!location ||!bio) {
+      alert('Please fill all fields to find better matches');
+      return;
+    }
+    currentUser = {name, gender, lookingFor, location, bio};
+    localStorage.setItem('heartlineUser', JSON.stringify(currentUser));
+    document.getElementById('signupPage').classList.add('hidden');
+    document.getElementById('swipePage').classList.remove('hidden');
+    document.getElementById('userName').innerText = name;
+    showProfile();
+  }
+  function showProfile() {
+    let matches = users.filter(u => {
+      if(u.name === currentUser.name) return false;
+      if(currentUser.lookingFor === 'Men' && u.gender!=='Man') return false;
+      if(currentUser.lookingFor === 'Women' && u.gender!=='Woman') return false;
+      return true;
+    });
+    if(currentIndex >= matches.length) {
+      document.getElementById('currentProfile').innerHTML = '<h3 class="center">No more profiles in your area.<br>Invite friends to Heartline!</h3>';
+      return;
+    }
+    let p = matches[currentIndex];
+    document.getElementById('matchName').innerText = `${p.name}, ${p.age}`;
+    document.getElementById('matchLocation').innerText = p.location;
+    document.getElementById('matchBio').innerText = p.bio;
+    document.getElementById('matchTag').innerText = p.tag;
+    document.getElementById('pic').src = p.img;
+  }
+  function like() {
+    likes++;
+    document.getElementById('likeCount').innerText = likes;
+    if(Math.random() > 0.7) {
+      alert('It\'s a Match! 💕 You and '+users[currentIndex].name+' liked each other!');
+      userMatches.push(users[currentIndex]);
+    }
+    nextProfile();
+  }
+  function nextProfile() {
+    currentIndex++;
+    showProfile();
+  }
+  function showMatches() {
+    alert('You have '+userMatches.length+' matches! In v2 we\'ll add chat.');
+  }
+  function showPolicy() {
+    document.querySelectorAll('.container > div').forEach(d => d.classList.add('hidden'));
+    document.getElementById('policyPage').classList.remove('hidden');
+  }
+  function closePolicy() {
+    document.getElementById('policyPage').classList.add('hidden');
+    if(localStorage.getItem('heartlineAgeVerified')) {
+      document.getElementById('signupPage').classList.remove('hidden');
+    } else {
+      document.getElementById('ageGate').classList.remove('hidden');
+    }
+  }
+  window.onload = function() {
+    if(localStorage.getItem('heartlineAgeVerified') && localStorage.getItem('heartlineUser')) {
+      currentUser = JSON.parse(localStorage.getItem('heartlineUser'));
+      document.getElementById('ageGate').classList.add('hidden');
+      document.getElementById('swipePage').classList.remove('hidden');
+      document.getElementById('userName').innerText = currentUser.name;
+      showProfile();
+    } else if(localStorage.getItem('heartlineAgeVerified')) {
+      document.getElementById('ageGate').classList.add('hidden');
+      document.getElementById('signupPage').classList.remove('hidden');
+    }
+  }
+</script>
+</body>
+</html>
