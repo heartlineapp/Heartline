@@ -174,5 +174,22 @@
         document.getElementById('app').classList.remove('hidden');
     }
 </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  
+  const firebaseConfig = {
+    apiKey: "AIzaSyCPwUG0Cjjrd0D...",
+    authDomain: "heartline-a371d.firebaseapp.com",
+    projectId: "heartline-a371d",
+    storageBucket: "heartline-a371d.appspot.com",
+    messagingSenderId: "230833188703",
+    appId: "1:230833188703:web:c00ae92dd6755ca62590ea"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  window.auth = auth;
+</script>
 </body>
 </html>
